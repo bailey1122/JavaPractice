@@ -1,0 +1,9 @@
+grant {
+    permission javax.security.auth.AuthPermission "createLoginContext.Login1";
+    permission javax.security.auth.AuthPermission "doAsPrivileged";
+};
+
+grant principal com.sun.security.auth.NTUserPrincipal "illya" {
+    permission java.util.PropertyPermission "user.*", "read";
+    permission java.util.PropertyPermission "java.version", "read";
+};

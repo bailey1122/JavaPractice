@@ -1,0 +1,20 @@
+//Key Khorsman and Gary.. Java, Varify...
+//before write this code you should open cmd 
+//in cmd you have to write below
+keytool -genkeypair -keystore michael.certs -alias michael// 1 
+
+keytool -exportcert -keystore michael.certs -alias michael -file michael.cer // 2
+
+keytool -printcert -file michael.cer // 3
+
+C:\Program Files\Java\jre-9.0.4\lib\security>keytool -list -v -keystore cacerts // 4
+
+keytool -importcert -keystore bob.certs -alias michael -file michael.cer // 5
+
+javac Test.java // 6
+
+jar cvf test.jar Test.class // 7
+
+jarsigner -keystore michael.certs Test.jar michael // 8
+
+jarsigner -verify -keystore bob.certs test.jar //9
