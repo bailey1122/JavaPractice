@@ -1,4 +1,4 @@
-package security;
+package securityex;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
