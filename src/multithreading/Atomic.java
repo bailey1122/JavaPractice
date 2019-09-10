@@ -16,6 +16,7 @@ public class Atomic {
     }
 
     static class AtThread extends Thread {
+
         @Override
         public void run() {
 //            i++;

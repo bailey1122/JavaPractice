@@ -3,20 +3,27 @@ package java8.lambdasandother;
 import java.util.ArrayList;
 import java.util.List;
 
+// the better way
 public class PredicateSearch {
     public static void main(String[] args) {
+        PredicateSearch ps = new PredicateSearch();
+
         List<Animal> animals = new ArrayList<Animal>();
         animals.add(new Animal("fish", false, true));
+        animals.add(new Animal("kangaroo", true, false));
+        animals.add(new Animal("cat", false, false));
 
-//        print(animals, a -> a.canHop());
-        print(animals, a -> a.canSwim());
+        ps.print(animals, a -> a.canHop());
+
+//        (String a, String b) -> { return a.equals(b); };
+//        (a -> a.equals.(b));
     }
 
-    private static void print(List<Animal> animals, Predicate<Animal> checker) {
+    public void print(List<Animal> animals, Predicate<Animal> check) {
         for (Animal animal: animals) {
-            if (checker.test(animal))
+            if (check.test(animal)) {
                 System.out.println(animal + " ");
+            }
         }
-        System.out.println();
     }
 }

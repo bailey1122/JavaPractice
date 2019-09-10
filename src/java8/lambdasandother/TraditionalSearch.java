@@ -11,8 +11,9 @@ public class TraditionalSearch {
         animals.add(new Animal("rabbit", true, false));
         animals.add(new Animal("turtle", false, true));
 
-//        print(animals, new CheckIfHopper());
+        print(animals, new CheckIfHopper());
         print(animals, a -> a.canHop());
+//        print(animals, a -> a.canSwim());
 //        print(animals, (Animal a) -> { return a.canHop(); });
 //        print(animals, a -> a.canSwim());
 //        print(animals, a -> ! a.canSwim());

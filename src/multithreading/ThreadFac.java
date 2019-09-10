@@ -9,6 +9,7 @@ public class ThreadFac {
             public Thread newThread(Runnable r) {
                 Thread thread = new Thread(r);
                 thread.setPriority(Thread.MAX_PRIORITY);
+//                thread.setPriority(10);
                 return thread;
             }
         };

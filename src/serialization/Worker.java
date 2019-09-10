@@ -71,6 +71,5 @@ class SerializExample {
         } catch (ClassNotFoundException e) {
             System.out.println("ClassNotFound");
         }
-
     }
 }
