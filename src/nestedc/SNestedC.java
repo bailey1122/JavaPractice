@@ -1,6 +1,6 @@
 package nestedc;
 
-// static nested class. Cam refer through an object reference
+// static nested class. Can refer through an object reference
 class OuterClassS { // outer class
     static int outer_x = 10; // static member
     int outer_y = 20; // instance(non-static) member

@@ -11,7 +11,7 @@ public class PredicateSearch {
         List<Animal> animals = new ArrayList<Animal>();
         animals.add(new Animal("fish", false, true));
         animals.add(new Animal("kangaroo", true, false));
-        animals.add(new Animal("cat", false, false));
+        animals.add(new Animal("others/cat", false, false));
 
         ps.print(animals, a -> a.canHop());
 
