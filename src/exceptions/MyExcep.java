@@ -3,7 +3,7 @@ package exceptions;
 // user-defined exception
 public class MyExcep extends Exception {
     // store account
-    private static int[] acc = {1001,1002,1003,1004};
+    private static int[] acc = {1001,1002,1003,1004,1005};
 
     private static String name[] = {"AB", "CD", "EF", "OO", "PP"};
     private static double[] bal =
