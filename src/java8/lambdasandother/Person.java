@@ -46,7 +46,7 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Unit1Exercise{" +
+        return "Person{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", age=" + age +

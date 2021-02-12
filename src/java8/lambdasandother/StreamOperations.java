@@ -3,6 +3,8 @@ package java8.lambdasandother;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+
 import static java.util.stream.Collectors.*;
 
 public class StreamOperations {
@@ -95,6 +97,15 @@ public class StreamOperations {
                 .collect(toList());
         System.out.println(doubleOfEven2);
 
+        System.out.println();
+        System.out.println("toSet");
+        Set<Integer> doubleOfEven3 = duplicates.stream()
+                .filter(e -> e % 2 == 0)
+                .map(e -> e * 2)
+                .collect(toSet());
+        System.out.println(doubleOfEven3);
+
+
 
         List<Person> people = createPeople();
 
@@ -118,14 +129,45 @@ public class StreamOperations {
         // person, get the value for the person if such a key is already in the map, add the second person to the already existed list
         // according to the key (person's name) and so on. Otherwise, just add a key and a value
 
-        people.stream()
-                .collect(groupingBy(Person::getFirstName)); // group elements by the first name . A key is the name and a value is
+        System.out.println(people.stream()
+                .collect(groupingBy(Person::getFirstName))); // group elements by the first name. A key is the name and a value is
         // a list containing the people that have the same name
 
+        System.out.println();
+        System.out.println();
         // given a list of people, create a map where their name is a key and value is all the ages of people with that name
-        people.stream()
-                .colect(groupingBy(Person::getFirstName),
-                        mapping)
+        System.out.println(people.stream()
+                .collect(groupingBy(Person::getFirstName,
+                        mapping(Person::getAge, toList())))); // names as a key and ages of the people as a value
+
+        List<Integer> numbers2 = Arrays.asList(1,2,3,5,4,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20);
+        // given an ordered list find the double of the first even number greater than 3
+
+        // performance
+
+        // 8 units of work
+        int result = 0;
+        for (int e : numbers) {
+            if (e > 3 && e % 2 == 0) {
+                result = e * 2;
+                break;
+            }
+        }
+        System.out.println(result);
+
+        // 46 units of work
+        numbers2.stream()
+                .filter(e -> e > 3)
+                .filter(e -> e % 2 == 0)
+                .map(e -> e * 2)
+                .findFirst();
+
+        // streams are absolutely lazy
+        numbers2.stream() // building a pi
+                .filter(e -> StreamOperations::isGT3)
+                .filter(e -> StreamOperations::isEven)
+                .map(e -> StreamOperations::doubleIt)
+                .findFirst();
     }
 
     public static List<Person> createPeople() {
@@ -140,5 +182,17 @@ public class StreamOperations {
         new Person("Jack", Gender.MALE, 72),
         new Person("Jill", Gender.FEMALE, 12)
         );
+    }
+
+    public static boolean isGT3(int number) {
+        return number > 3;
+    }
+
+    public static boolean isEven(int number) {
+        return number % 2 == 0;
+    }
+
+    public static int doubleIt(int number) {
+        return number * 2;
     }
 }
