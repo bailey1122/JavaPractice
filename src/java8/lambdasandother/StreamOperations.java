@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
@@ -162,12 +163,42 @@ public class StreamOperations {
                 .map(e -> e * 2)
                 .findFirst();
 
-        // streams are absolutely lazy
-        numbers2.stream() // building a pi
-                .filter(e -> StreamOperations::isGT3)
-                .filter(e -> StreamOperations::isEven)
-                .map(e -> StreamOperations::doubleIt)
-                .findFirst();
+        // streams are absolutely lazy. Lazy evaluation is possible only if the function don't have side effect. Computation
+        // on the source data is only performed when the terminal operation is initiated, and source elements are consumed only
+        // as needed
+        numbers2.stream() // building a pipeline. Take one element and apply an entire sequence of computations on that element.
+                // Only when we're done take the next element and apply the entire sequence on the second element and so on
+                // sequence
+                .filter(StreamOperations::isGT3) // whether the number is greater than 3. Intermediate operation
+                .filter(StreamOperations::isEven) // go to this step if the previous one is true. Intermediate operation
+                .map(StreamOperations::doubleIt) // double it. Intermediate operation
+                .findFirst(); // get the result. Terminal operation
+
+        // sized, ordered, non-distinct, non-sorted
+        duplicates.stream()
+                .filter(e -> e % 2 == 0)
+                .forEach(System.out::println);
+
+        // sized, ordered, non-distinct, sorted
+        duplicates.stream()
+                .filter(e -> e % 2 == 0)
+                .sorted()
+                .forEach(System.out::println);
+
+        // sized, ordered, distinct, sorted
+        duplicates.stream()
+                .filter(e -> e % 2 == 0)
+                .sorted()
+                .distinct()
+                .forEach(System.out::println);
+
+        // infinite stream. It cannot exists without laziness. Laziness cannot exist without a side effect. Side effect
+        // cannot exist without immutability. Start with 100, create a series 100, 101, 102, 103, ...
+        Stream.iterate(100, e -> e + 1);
+
+        // given a number k, and a count n, find the total of double of n even numbers starting with k,
+        // where sqrt of each number > 20
+
     }
 
     public static List<Person> createPeople() {
@@ -185,14 +216,37 @@ public class StreamOperations {
     }
 
     public static boolean isGT3(int number) {
+        System.out.println("isGT3 " + number);
         return number > 3;
     }
 
     public static boolean isEven(int number) {
+        System.out.println("isEven " + number);
         return number % 2 == 0;
     }
 
     public static int doubleIt(int number) {
+        System.out.println("doubleIt " + number);
         return number * 2;
+    }
+
+    public static int compute(int k, int n) {
+//        int result = 0, index = k, count = 0;
+//
+//        while (count < n) {
+//            if (index % 2 == 0 && Math.sqrt(index) > 20) {
+//                result += index * 2;
+//                count++;
+//            }
+//            index++;
+//        }
+//        return result;
+
+        return Stream.iterate(k, e -> e + 1)// get an infinite stream starting with k. Unbounded, lazy
+                .filter(e -> e % 2 == 0) // unbounded, lazy
+                .filter(e -> Math.sqrt(e) > 20) // unbounded, lazy
+                .mapToInt(e -> e * 2) // unbounded, lazy
+                .limit(n) // sized, lazy
+                .sum();
     }
 }
