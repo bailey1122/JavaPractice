@@ -4,11 +4,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
+// stream in Java 8 doesn't have the error channel and complete channel. It has the data channel. It's hard to deal with exception handling
 public class StreamOperations {
+
+    // functional programming:
+    // immutability
+    // higher-order functions (pass the function to another function, we could create function that return functions from the functions)
+    // function pipeline
+    // immutability
+
+    // we are going down stream. If something goes wrong, we go uo stream
 
     public static void main(String[] args) {
         List<Integer> numbers = Arrays.asList(1,2,3,4,5,6,7,8,9);
@@ -76,6 +86,12 @@ public class StreamOperations {
         System.out.println(numbers.stream()
                 .map(e -> e * 2.0)
                 .reduce(0.0, (a, b) -> a + b));
+
+        List<String> symbols = Arrays.asList("GOOG", "AAPL", "MSFT", "INTC");
+        System.out.println(symbols.stream()
+                .map(String::toLowerCase) // higher-order function
+                .filter(symbol -> symbol.startsWith("G"))
+                .collect(toList()));
 
         //double the even values and put them into a list
 
