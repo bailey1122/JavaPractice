@@ -6,11 +6,13 @@ import io.reactivex.ObservableEmitter;
 import java.util.List;
 
 public class StockServer {
+
     public static Observable<StockInfo> getFeed(List<String> symbols) {
         System.out.println("created...");
 
 //        return null;
-        // the method is not called because it's lazy
+        // the method is not called because it's lazy. It will start processing a request as soon as an emitter connects
+        // to observable
         return Observable.create(emitter -> emitPrice(emitter, symbols));
     }
 
@@ -22,7 +24,7 @@ public class StockServer {
 
         while (count < 5) {
             symbols.stream()
-                    .map(StockInfo::fetch) // get the stock price
+                    .map(StockFetcher::fetch) // get the stock price
                     .forEach(emitter::onNext); // data channel through which the data is sent
 
             // take a break sleep
