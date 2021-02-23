@@ -18,9 +18,16 @@ public class StockServer2 {
     public static void processRequest(Subscriber<? super StockInfo> subscriber, List<String> symbols) {
         System.out.println("processing..."); // processing the request
 
+//        // constantly sending data to the data channel
+//        while (true) {
+//        symbols.stream()
+//                .map(StockFetcher::fetch) // OnErrorNotImplementedException because we haven't opened the error channel
+//                .forEach(subscriber::onNext);
+//        }
+
         while (!subscriber.isUnsubscribed()) { // allow sending data
             symbols.stream()
-                    .map(StockFetcher::fetch2)
+                    .map(StockFetcher::fetch)
                     .forEach(subscriber::onNext);
         }
 

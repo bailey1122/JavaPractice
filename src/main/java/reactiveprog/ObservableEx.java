@@ -1,5 +1,6 @@
 package reactiveprog;
 
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
@@ -28,7 +29,9 @@ public class ObservableEx {
     // functions (Subscriber, multiple Subscribers).We can multiple views on it. Ability to support multiple subscribers.
     // High level abstraction. We can control the iteration and unsubscribing. If your task is IO intensive, then have no more
     // threads than the number of cores (the number of cores / (1 - blocking factor)). If the thread is blocked 50% of the time,
-    // then (the number of cores / (1 - 0.5) = 2 * the number of cores). Blocking factor is between 0 and less than 1
+    // then (the number of cores / (1 - 0.5) = 2 * the number of cores). Blocking factor is between 0 and less than 1. We can
+    // make it asynchronous
+
     public static void main(String[] args) throws InterruptedException {
         List<String> symbols = Arrays.asList("GOOG", "AAPL", "MSFT", "INTC");
 
@@ -40,8 +43,36 @@ public class ObservableEx {
         Observable<StockInfo> feed = StockServer2.getFeed(symbols); // it's lazy so it's not doing any work until subscribing
         System.out.println("got observable");
 
-        feed.subscribeOn(Schedulers.io())
-                .subscribe(ObservableEx::printStockInfo);
+        // keep taking stocks while their price is higher than 80
+        feed.takeWhile(stockInfo -> stockInfo.value > 80) // it's in the middle. It sends uncompleted downstream and unsubscribed upstream
+                .subscribe(System.out::println, ObservableEx::handleError, () -> System.out.println("DONE"));
+
+
+        // keep taking stocks while their price is not higher than 80
+        feed.skipWhile(stockInfo -> stockInfo.value > 80)
+                .subscribe(System.out::println, ObservableEx::handleError, () -> System.out.println("DONE"));
+
+        // skip the first 30
+        feed.skip(30)
+                .subscribe(System.out::println, ObservableEx::handleError, () -> System.out.println("DONE"));
+
+        // take the first 10
+        feed.take(10)
+                .subscribe(System.out::println, ObservableEx::handleError);
+
+//        feed.map(stockInfo -> new StockInfo(stockInfo.ticker, stockInfo.value * 0.9))
+//                .filter(stockInfo -> stockInfo.value > 100)
+//                .subscribe(System.out::println, ObservableEx::handleError);
+
+//        // error handling, the second argument opens the error channel. We can take one Observable and attach another one to it
+//        // and keep going that way
+//        feed.onErrorResumeNext(throwable -> callABack(throwable, symbols)) // if there's an error, just resume the next service
+//                .subscribe(System.out::println, ObservableEx::handleError);
+        // we can have a pool of the objects and return from the pool as objects recover
+
+
+//        feed.subscribeOn(Schedulers.io())
+//                .subscribe(ObservableEx::printStockInfo);
 
         Thread.sleep(10000);
 
@@ -81,6 +112,15 @@ public class ObservableEx {
 //                System.out.println(stockInfo); // we get 'processing' here because the request is processing
 //            }
 //        });
+    }
+
+    private static Observable<StockInfo> callABack(Throwable throwable, List<String> symbols) {
+        System.out.println(throwable); // show the error
+        return StockServer2.getFeed(symbols); // return a new backup service
+    }
+
+    private static void handleError(Throwable throwable) {
+        System.out.println(throwable); // the error message comes from this line. The minute it happens, it closes the data channel
     }
 
     public static void printStockInfo(StockInfo stockInfo) {
