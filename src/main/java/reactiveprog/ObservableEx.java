@@ -3,6 +3,7 @@ package reactiveprog;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -25,9 +26,10 @@ public class ObservableEx {
     // Observable is good for handling exceptions. It knows when the data stream is over. There is a complete message.
     // It has the data channel and the error channel. There is a complete message. It could compose with other
     // functions (Subscriber, multiple Subscribers).We can multiple views on it. Ability to support multiple subscribers.
-    // High level abstraction. We can control the iteration and unsubscribing. If you task is IO intensive, then have no more
-    // threads than the number of cores
-    public static void main(String[] args) {
+    // High level abstraction. We can control the iteration and unsubscribing. If your task is IO intensive, then have no more
+    // threads than the number of cores (the number of cores / (1 - blocking factor)). If the thread is blocked 50% of the time,
+    // then (the number of cores / (1 - 0.5) = 2 * the number of cores). Blocking factor is between 0 and less than 1
+    public static void main(String[] args) throws InterruptedException {
         List<String> symbols = Arrays.asList("GOOG", "AAPL", "MSFT", "INTC");
 
         Iterator<String> iterator = symbols.iterator();
@@ -38,8 +40,10 @@ public class ObservableEx {
         Observable<StockInfo> feed = StockServer2.getFeed(symbols); // it's lazy so it's not doing any work until subscribing
         System.out.println("got observable");
 
-        // asynchronous
-        feed.subscribe(ObservableEx::printStockInfo);
+        feed.subscribeOn(Schedulers.io())
+                .subscribe(ObservableEx::printStockInfo);
+
+        Thread.sleep(10000);
 
 //        feed.subscribe(new Subscriber<StockInfo>() {
 //            @Override
