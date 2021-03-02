@@ -1,5 +1,7 @@
 package reactiveprog;
 
+import io.reactivex.Maybe;
+import io.reactivex.MaybeEmitter;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 
@@ -7,6 +9,38 @@ import java.util.List;
 
 public class StockServer {
 
+    // succeeds with an item, or no item, or errors. The reactive version of an Optional
+    public static Maybe<StockInfo> getFeedMaybe(List<String> symbols) {
+        System.out.println("created...");
+
+        return Maybe.create(emitter -> emitPriceMaybe(emitter, symbols));
+    }
+
+    private static void emitPriceMaybe(MaybeEmitter<StockInfo> emitter, List<String> symbols) {
+        System.out.println("Ready to emit...");
+
+        if (symbols != null && !symbols.isEmpty()) {
+            symbols.stream()
+                    .map(StockFetcher::fetch) // get the stock price
+                    .forEach(emitter::onSuccess); // data channel through which the data is sent
+
+            // take a break sleep
+            sleep(1000);
+        }
+
+        // terminates the data channel
+        emitter.onComplete(); // stop producing any data
+    }
+
+
+
+
+
+
+
+
+
+    // emits 0 or n items and terminates with an success or an error event
     public static Observable<StockInfo> getFeed(List<String> symbols) {
         System.out.println("created...");
 

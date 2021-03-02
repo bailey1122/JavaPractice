@@ -3,7 +3,8 @@ package reactiveprog;
 public class StockFetcher {
 
     public static StockInfo fetch(String ticker) {
-        if (Math.random() > 0.9) throw new RuntimeException("smth just happened...");
+//        if (Math.random() > 0.9) throw new RuntimeException("smth just happened...");
+        if ( 100 > 1) throw new RuntimeException("smth just happened...");
 
         return new StockInfo("Price", 2);
     }

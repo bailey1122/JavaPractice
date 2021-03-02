@@ -12,6 +12,7 @@ import java.util.List;
 
 // subscriber
 
+// CAP it is not possible to has consistency, availability, and partition tolerance all together
 // Observable is a data stream (data flow). Push data to the client when data is ready. May be synchronous and asynchronous.
 // It generates data and it can send a signal end of data stream. Propagate error. It has the data channel and the error channel.
 // The data channel gets closed the minute we have an error close signal
@@ -39,6 +40,39 @@ public class ObservableEx {
         while (iterator.hasNext()) {
             String data = iterator.next();
         }
+
+//        Observable<Integer> feed2 = StockServer2.getData();
+//        System.out.println("got observable");
+//
+//        // in cold observable every subscriber starts fresh (subscription)
+//        Observable<Integer> feed3 = feed2.subscribeOn(Schedulers.io()); // fresh subscribers
+//        System.out.println("got observable");
+
+
+        // in hot observable every subscriber comes and joins
+//        Observable<Integer> feed3 = StockServer2.getData()
+//                .subscribeOn(Schedulers.io())
+//                .share(); // share it across multiple subscribers.
+//                System.out.println("got observable");
+
+
+//        Observable<Integer> feed3 = StockServer2.getData()
+//                .onBackpressureBuffer(); // buffer them while its busy processing. Process every one of them
+
+        Observable<Integer> feed3 = StockServer2.getData()
+                .onBackpressureDrop(); // doesn't care what happened in the past. It cares what happens now. If its busy and
+        // the data is coming and there is no response, just give me fresh data
+        System.out.println("got observable");
+
+        // two subscribers (observers) are listening to the same observable
+        feed3.subscribe(System.out::println);
+        Thread.sleep(5000);
+
+        // the second one
+        feed3.subscribe(System.out::println);
+        Thread.sleep(30000);
+
+
 
         Observable<StockInfo> feed = StockServer2.getFeed(symbols); // it's lazy so it's not doing any work until subscribing
         System.out.println("got observable");

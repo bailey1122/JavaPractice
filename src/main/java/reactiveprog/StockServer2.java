@@ -7,6 +7,27 @@ import java.util.List;
 
 public class StockServer2 {
 
+    public static Observable<Integer> getData() {
+        return Observable.create(subscriber -> processRequest2(subscriber)); // start sending some data to a subscriber
+    }
+
+    private static void processRequest2(Subscriber<? super Integer> subscriber) {
+        int count = 0;
+
+        while (true) {
+            subscriber.onNext(count++);
+            sleep(1000);
+        }
+    }
+
+    private static void sleep(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static Observable<StockInfo> getFeed(List<String> symbols) {
 
         // Observable will process the request as soon as we connect and subscribe to it. When the subscriber comes in,
