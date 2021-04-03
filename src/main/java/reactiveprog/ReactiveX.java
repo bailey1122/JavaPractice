@@ -3,6 +3,8 @@ package reactiveprog;
 import io.reactivex.*;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import org.jetbrains.annotations.NotNull;
@@ -15,11 +17,28 @@ import java.util.stream.Collectors;
 // Subscribers (or observers) listening to the observables.
 // A set of methods for modifying and composing the data.
 // An observable emits items; a subscriber consumes those items
-public class RXEx {
+public class ReactiveX {
     private static String res = "";
 
     public static void main(String[] args) {
         List<String> symbols = Arrays.asList("GOOG", "AAPL", "MSFT", "INTC");
+
+        Observable<Integer> o = Observable.just(1, 2, 3, 4, 5)
+                .filter(new Predicate<Integer>() {
+                    @Override
+                    public boolean test(@NotNull Integer integer) throws Exception {
+                        return integer % 2 == 0;
+                    }
+                });
+        o.subscribe(System.out::println);
+
+
+        Consumer<Integer> consumer = new Consumer<Integer>() {
+            @Override
+            public void accept(Integer integer) throws Exception {
+                System.out.println(integer);
+            }
+        };
 
         Observable<String> observer = Observable.just("Hello"); // provides data
         observer.subscribe(s -> res = s); // callable as subscriber
@@ -37,6 +56,8 @@ public class RXEx {
                 try {
                     symbols.stream()
                             .map(StockFetcher::fetch2) // get the stock price
+                            // onNext() is called on our observer each time a new event is published to the attached Observable.
+                            // This is the method where we'll perform some action on each event
                             .forEach(emitter::onNext);
                 } catch (Exception e) {
                     emitter.onError(e);
@@ -170,7 +191,8 @@ public class RXEx {
                     emitter.onComplete(); // contains no value
                 }
             } catch (Exception e) {
-                emitter.onError(e); // an error occurred
+                emitter.onError(e); // an error occurred. onError() is called when an unhandled exception is thrown during
+                // the RxJava framework code or our event handling code
             }
         });
         System.out.println("Maybe");

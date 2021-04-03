@@ -24,6 +24,14 @@ public class Person {
         return firstName;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }

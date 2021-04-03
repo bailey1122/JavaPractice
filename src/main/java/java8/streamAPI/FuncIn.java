@@ -108,6 +108,15 @@ public class FuncIn {
         System.out.println(op3.orElse(Double.NaN));
         System.out.println(op3.orElseGet(() -> Math.random()));
         System.out.println(op3.orElseThrow(() -> new IllegalArgumentException()));
+
+        Optional<String> ss = Optional.of("String");
+        System.out.println(ss.get());
+        System.out.println(ss.map(String::toUpperCase)
+                .get());
+
+        System.out.println(Optional.of("smth").flatMap(s -> Optional.of("nested"))); // keep a flat structure
+        System.out.println(Optional.of("smth").flatMap(s -> Optional.of("nested")).get());
+
     }
 
     // returning an Optional

@@ -67,7 +67,8 @@ public class StockServer {
         }
 
         // terminates the data channel
-        emitter.onComplete(); // stop producing any data
+        emitter.onComplete(); // stop producing any data. It is called when the sequence of events associated with an Observable
+        // is complete, indicating that we should not expect any more onNext calls on our observer
 
         // the minute complete channel sends a signal, the data channel slows us up which means the following line is not
         // sending anything to the observer

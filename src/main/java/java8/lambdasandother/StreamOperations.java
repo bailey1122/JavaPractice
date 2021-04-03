@@ -21,7 +21,17 @@ public class StreamOperations {
     // we are going down stream. If something goes wrong, we go uo stream
 
     public static void main(String[] args) {
-        List<Integer> numbers = Arrays.asList(1,2,3,4,5,6,7,8,9);
+        List<Integer> numbers = Arrays.asList(1,2,3,4,5,6,7,8,9, 10);
+
+        numbers.stream()
+//                .map(e -> func1(e)) // is a one to one mapping
+//                .map(e -> func2(e)) // is a one to many mapping
+                .flatMap(e -> Stream.of(func2(e)))
+                .forEach(System.out::println);
+
+        // map one-to-one Stream<T> ==> Stream<Y>
+        // map one-to-many Stream<T> ==> Stream<List<Y>>
+        // flatMap one-to-many Stream<T> ==> Stream<Y> ???
 
         List<Integer> duplicates = Arrays.asList(1,2,3,4,5,1,2,3,4,5);
 
@@ -162,6 +172,7 @@ public class StreamOperations {
 
         // performance
 
+
         // 8 units of work
         int result = 0;
         for (int e : numbers) {
@@ -215,6 +226,14 @@ public class StreamOperations {
         // given a number k, and a count n, find the total of double of n even numbers starting with k,
         // where sqrt of each number > 20
 
+    }
+
+    private static int func1(int e) {
+        return e * 2;
+    }
+
+    private static Object[] func2(int e) {
+        return new Object[]{e - 1, e + 1};
     }
 
     public static List<Person> createPeople() {
